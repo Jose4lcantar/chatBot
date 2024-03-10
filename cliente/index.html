@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatBot</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Estilos personalizados */
+    body {
+      padding-top: 20px;
+    }
+    /* Agregar margen a la derecha del cuadro de entrada de texto */
+    #message {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="text-center">ChatBot</h1>
+  <div class="container">
+    <div id="chat"></div>
+    <div class="input-group mb-3">
+      <input type="text" id="message" class="form-control" placeholder="Escribe aquí...">
+      <div class="input-group-append">
+        <button class="btn btn-primary" onclick="sendMessage()">Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agregar el enlace a Bootstrap JS y jQuery (necesario para Bootstrap) -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io(); // Conectarse al servidor WebSocket
+    const chatDiv = document.getElementById('chat');
+
+    socket.on('message', function(data) {
+      appendMessage('ChatBot: ' + data);
+    });
+
+    function appendMessage(message) {
+      const messageElement = document.createElement('div');
+      messageElement.textContent = message;
+      chatDiv.appendChild(messageElement);
+    }
+
+    function sendMessage() {
+      const message = document.getElementById('message').value;
+      appendMessage('Tú: ' + message);
+      socket.emit('message', message); // Enviar el mensaje al servidor WebSocket
+      document.getElementById('message').value = '';
+    }
+  </script>
+</body>
+</html>
